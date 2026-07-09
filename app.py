@@ -31,6 +31,10 @@ def check_password():
     if "authenticated" in st.session_state and not st.session_state["authenticated"]:
         st.error("Incorrect password")
     return False
+    
+if not check_password():
+    st.stop()
+
 
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
