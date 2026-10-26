@@ -4,9 +4,23 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from tools import web_search ,scrape_url
 from dotenv import load_dotenv
+from langchain_core.rate_limiters import InMemoryRateLimiter
 load_dotenv()
 
-llm = ChatMistralAI(model="mistral-small-2506",temperature=0)
+rate_limiter = InMemoryRateLimiter(
+    requests_per_second=0.4,     
+    check_every_n_seconds=0.1,
+    max_bucket_size=1,
+)
+
+llm = ChatMistralAI(
+    model="mistral-small-2506",
+    temperature=0,
+    rate_limiter=rate_limiter,
+    max_retries=6,
+    timeout=90,
+)
+
 def build_search_agent():
     return create_agent(
         model = llm,
